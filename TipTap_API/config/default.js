@@ -1,0 +1,1 @@
+exports.privateKey = '12345678ashajd';
