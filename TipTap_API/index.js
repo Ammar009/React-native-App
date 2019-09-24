@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 const port = 3000;
 const corspermissions = require('./middlewares/corspermissions')
 const user = require('./routes/users');
+const tipper = require('./routes/tipReciever');
 
 //app.use(corspermissions.permission);
 app.use(cors())
@@ -26,3 +27,4 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/users', user);
+app.use('/api/tipReciever', tipper);

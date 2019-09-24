@@ -6,7 +6,11 @@ const crypto = require('crypto');
 var randomize = require('randomatic');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
-const { Token, validateToken } = require('../models/token')
+const { Token, validateToken } = require('../models/token');
+const GMAIL_SERVICE = 'Gmail';
+const EMAIL = 'tfortiptfortap@gmail.com';
+const GMAIL_USER = 'Tip Tap';
+const GMAIL_PASSWORD = 'tiptap123!';
 
 
 //User Signup
@@ -52,9 +56,9 @@ router.post('/login', async(req,res)=>{
 router.post('/emailverification', async (req, res) => {
     console.log('III Ammm hpppyyy to be called', req.body.id);
     const transporter = nodemailer.createTransport({
-    service: 'Sendgrid',
-    auth: {
-    user: 'TipForTap',
+    service: 'gmail',
+    auth: { 
+    user: 'tfortiptfortap@gmail.com',
     pass: 'tiptap123!'
     }
     });
@@ -69,7 +73,7 @@ router.post('/emailverification', async (req, res) => {
     });
     
     const info = await transporter.sendMail({
-    from: 'verify@tiptap.com', // sender address
+    from: 'tfortiptfortap@gmail.com', // sender address
     to: req.body.email, // list of receivers
     subject: 'Account Verification Token', // Subject line
     text: `Hello, Please verify your account by clicking the link: http://${req.headers.host}/api/users/confirmation/${token.token} .`, // plain text body
@@ -127,15 +131,15 @@ router.post('/emailverification', async (req, res) => {
                 }
             });
             const transporter = nodemailer.createTransport({
-                service: 'Sendgrid',
+                service: 'gmail',
                 auth: {
-                user: 'TipForTap',
+                user: 'tfortiptfortap@gmail.com',
                 pass: 'tiptap123!'
                 }
             });
 
             const info = await transporter.sendMail({
-                from: 'verify@tiptap.com', // sender address
+                from: 'tfortiptfortap@gmail.com', // sender address
                 to: req.body.email, // list of receivers
                 subject: 'Password Reset Link', // Subject line 
                 text: `Hello, Please Enter This code to reset your password.. It will expire in 30 minutes. \n ${token}.`, // plain text body

@@ -46,8 +46,8 @@ const userSchema = mongoose.Schema({
         required: true
     },
     userType: {
-        type: Boolean,
-        default: false
+        type: String,
+        required: true
     },
     isVerified: {
         type: Boolean,
@@ -84,6 +84,7 @@ function validateUser(user) {
         password: Joi.string().required().min(5).max(1024),
         zipcode: Joi.number().required(),
         country: Joi.string().required(),
+        userType: Joi.string().required(),
         address: Joi.string().required(),
         isVerified : Joi.boolean()
     }
