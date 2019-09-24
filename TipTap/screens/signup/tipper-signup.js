@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text,Alert, TextInput,KeyboardAvoidingView,TouchableOpacity, View, TouchableHighlight, ScrollView, StyleSheet, SafeAreaView, Dimensions, Platform } from 'react-native';
-const {height, width} = Dimensions.get('window');
+// const {height, width} = Dimensions.get('window');
 
 class TipperSignup extends Component {
     constructor(props) {
@@ -39,6 +39,7 @@ class TipperSignup extends Component {
                     first_name: `${this.state.first_name}`,
                     last_name: `${this.state.last_name}`,
                     email: `${this.state.email}`,
+                    userType: "tipgiver",
                     password: `${this.state.password}`,
                     zipcode: `${this.state.zipcode}`,
                     country: `${this.state.country}`,
@@ -47,13 +48,12 @@ class TipperSignup extends Component {
                 })
             }).then(response => response.json())
             .then(response => {
+                console.log('------------------------',response)
                 if(response.message){
                     Alert.alert('This Email is already registered');
                 }else{
                     this.sendEmail(response);  
                 }
-                  
-                
                 
             }).catch((err) => {
                 Alert.alert('This email is already registered!!');

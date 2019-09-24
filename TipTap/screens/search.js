@@ -1,12 +1,59 @@
 import React,{Component} from 'react';
 import {StyleSheet, Platform, View, Text, SafeAreaView, TouchableOpacity, ScrollView, TextInput} from 'react-native';
-import { Container, Header, Content, Textarea, Form, Card } from "native-base";
-import Icon from "react-native-vector-icons/Ionicons";
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import Entypo from "react-native-vector-icons/Entypo";
+import { compact } from "underscore";
 
 class Search extends Component{
-   
+    constructor() {
+        super();
+        this.state = {
+            tipReciever: [],
+            temp: []
+            // loading: true
+        };
+        // this.handleChange = this.handleChange.bind(this);
+    }
+    // componentDidMount() {
+    //     if(Platform.OS == "android") {
+    //         Permissions.check('camera').then(res => {
+    //             console.log('response from permission', res);
+    //         })
+
+    //     }
+    // }
+    componentWillMount() {
+        // let tipReciever = [];
+        fetch('http://192.168.1.132:3000/api/tipReciever/getAllTipReciever',{
+                method: 'GET',
+            }).then(response => response.json())
+            .then(response => {
+                this.setState({ tipReciever : response})
+                this.setState({ temp : response})
+            }).catch((err) => {
+                Alert.alert('Error');
+                console.log('ERRRRROOOORRR',err)})
+                .done();
+    }
+    handleChange =(e)=> {
+        console.log('=====>', e)
+        if(e !== ''){
+            let x;
+            x = this.state.tipReciever.map(item=>{
+                let b = item.first_name;
+                if(b.includes(e)){
+                    return item
+                }
+            })
+            let tse = compact(x);
+            console.log('xxxxxxxxxxxxxxxxxxxxxx',x, tse);
+            
+            this.setState({tipReciever : tse})
+        }
+        else {
+            this.setState({tipReciever: this.state.temp})    
+        }
+    }
     render(){
         const {navigate}= this.props.navigation;
         return(<SafeAreaView style={{flex:1}}>
@@ -20,23 +67,30 @@ class Search extends Component{
                         <Text>Activity</Text>
                     </View> */}
                 </View>
-                <TextInput style={styles.searchInput} placeholder='Search Members'></TextInput>
-            
+                <TextInput style={styles.searchInput} placeholder='Search Members' keyboardType='default' onChangeText={this.handleChange}></TextInput>
                 <ScrollView style={styles.listWrapper}>
-                {[0,1,2,3,4,5,6,7,8,9,10,11,].map((item)=>{
-                    return(<TouchableOpacity key={item} style={styles.searchItem} onPress={()=>{navigate('selectedPerson')}}>
+                {this.state.tipReciever.length > 0 ? this.state.tipReciever.map((item, index)=>{
+                    return(<TouchableOpacity key={index} style={styles.searchItem} onPress={()=>{navigate('selectedPerson', {
+                        recieverFirstName: 'TESTTTT',
+                        recieverLastName: 'YYYYY',
+
+                    })}}>
                         <View style={styles.receiverInfoBlock} >          
                             <View style={styles.receiverAvatar}></View>
                             <View style={styles.infoBlock}>
-                                <Text style={styles.receiverName}>Emma Martin</Text>
-                                <Text style={styles.receiverPlace}>Serena</Text>
+                                <Text style={styles.receiverName}>{item.first_name}</Text>
+                                <Text style={styles.receiverPlace}>{item.last_name}</Text>
+                                <Text style={styles.receiverPlace}>{item.email}</Text>
                             </View>
                         </View>
                         <View style={styles.nextIcon}>
                             <MaterialIcon name="navigate-next" size={32} color='#C2C4CA'/>
                         </View> 
                     </TouchableOpacity>)
-                })}
+                }) : <View style={styles.infoBlock}>
+                    <Text style={styles.receiverName}>No Record Found</Text>
+                </View>
+                }
                 </ScrollView>
             </SafeAreaView>)
     }

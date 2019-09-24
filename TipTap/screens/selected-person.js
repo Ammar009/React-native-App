@@ -6,7 +6,9 @@ import { Container, Header, Content, Textarea, Form, Card } from "native-base";
 class SelectedPerson extends Component{
 
     render(){
-        const {navigate}= this.props.navigation
+        const {navigation}= this.props;
+        const firstName = navigation.getParam('recieverFirstName'); 
+        const lastName = navigation.getParam('recieverLastName');
         return(
         <SafeAreaView style={{flex:1}}>
             <View  style={styles.infoContainer}>
@@ -14,8 +16,8 @@ class SelectedPerson extends Component{
                 height:100,
                 borderRadius:50,
                 backgroundColor:'black', marginBottom:10}}></View>
-                <Text style={{fontSize:30, fontWeight:'bold', color:'#FFFFFF'}}>Mable Andrew</Text>
-                <Text style={{color:'#FFFFFF'}}>McDonalds</Text>
+                <Text style={{fontSize:30, fontWeight:'bold', color:'#FFFFFF'}}>{JSON.stringify(firstName)}</Text>
+                <Text style={{color:'#FFFFFF'}}>{JSON.stringify(lastName)}</Text>
             </View>
             <View  style={styles.cardContainer}>
                 <Card style={{width:'100%', height:'50%', borderRadius:10, alignItems:'center', justifyContent:'center', marginTop:-60}}>

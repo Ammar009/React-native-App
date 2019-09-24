@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import {  Alert,Text, TextInput,KeyboardAvoidingView, View,TouchableOpacity,TouchableHighlight, ScrollView, StyleSheet, SafeAreaView, Dimensions, Platform } from 'react-native';
-// import TipTapButton from '../../components/button'
-//import console = require('console');
 <script src="http://10.42.0.1:8097"></script> 
 
 class TipReceiverSignup extends Component {
@@ -40,6 +38,7 @@ class TipReceiverSignup extends Component {
                     first_name: `${this.state.first_name}`,
                     last_name: `${this.state.last_name}`,
                     email: `${this.state.email}`,
+                    userType: "tipreciever",
                     password: `${this.state.password}`,
                     zipcode: `${this.state.zipcode}`,
                     country: `${this.state.country}`,
@@ -49,14 +48,15 @@ class TipReceiverSignup extends Component {
             }).then(response => response.json())
             .then(response => {
                 if(response.message){
-                    Alert.alert('This Email is already registered!!!');
+                    Alert.alert('This Email is already registered');
                 }else{
                     this.sendEmail(response);  
-                }   
+                }
+                
             }).catch((err) => {
     
                 Alert.alert('This email is already registered!!');
-                console.log('=================',err)})
+                console.log('ERRRRROOOORRR',err)})
                 .done();
 
           }
