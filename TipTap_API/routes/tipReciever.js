@@ -12,7 +12,7 @@ const GMAIL_USER = 'Tip Tap';
 const GMAIL_PASSWORD = 'tiptap123!';
 
 
-//User Signup
+//get All Tip Recievers
 router.get('/getAllTipReciever', async (req, res) => {
     const user = await User.find({ userType : "tipreciever" });
     return res.json(user);

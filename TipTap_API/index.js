@@ -7,6 +7,7 @@ const port = 3000;
 const corspermissions = require('./middlewares/corspermissions')
 const user = require('./routes/users');
 const tipper = require('./routes/tipReciever');
+const userTipReciever = require('./routes/usersRecievingTips');
 
 //app.use(corspermissions.permission);
 app.use(cors())
@@ -26,5 +27,6 @@ app.get('/', (req, res) => {
     res.send(200)
 })
 
-app.use('/api/users', user);
-app.use('/api/tipReciever', tipper);
+app.use('/api/users', user); // all users either Tip giver or reciever
+app.use('/api/tipReciever', tipper);  //have data of all the tip recievers
+app.use('/api/userTipReciever', userTipReciever); // It contains all the tipreciever USERS
