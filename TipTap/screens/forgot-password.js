@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-//import { resetPassword } from './resetPassword';
+import {LOCALHOSTVPN} from '../config';
 import { 
     Alert,
     View, 
@@ -39,7 +39,7 @@ class Forgotpassword extends Component {
             pressed:!this.state.pressed
           })  
         console.log('In forgot Password', this.state.isActivityIndicator);
-        fetch('http://192.168.1.132:3000/api/users/forgotPassword',{
+        fetch(`${LOCALHOSTVPN}/api/users/forgotPassword`,{
             method: 'POST',
             headers: {
                 'Accept' : 'application/json',
@@ -66,7 +66,7 @@ class Forgotpassword extends Component {
         this.setState({
             isActivityIndicator:!this.state.isActivityIndicator
           })
-          fetch('http://192.168.1.132:3000/api/users/verifyToken',{
+          fetch(`${LOCALHOSTVPN}/api/users/verifyToken`,{
             method: 'POST',
             headers: {
                 'Accept' : 'application/json',

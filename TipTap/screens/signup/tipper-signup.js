@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {LOCALHOSTVPN} from '../../config';
 import { Text,Alert, TextInput,KeyboardAvoidingView,TouchableOpacity, View, TouchableHighlight, ScrollView, StyleSheet, SafeAreaView, Dimensions, Platform } from 'react-native';
 // const {height, width} = Dimensions.get('window');
 
@@ -29,7 +30,7 @@ class TipperSignup extends Component {
           }
           else{
 
-            fetch('http://192.168.1.132:3000/api/users/signup',{
+            fetch(`${LOCALHOSTVPN}/api/users/signup`,{
                 method: 'POST',
                 headers: {
                     'Accept' : 'application/json',
@@ -66,7 +67,7 @@ class TipperSignup extends Component {
 
     sendEmail(res){
         console.log('In SEND EMAILLLLLLLLL', res);
-        fetch('http://192.168.1.132:3000/api/users/emailverification',{
+        fetch(`${LOCALHOSTVPN}/api/users/emailverification`,{
                 method: 'POST',
                 headers: {
                     'Accept' : 'application/json',

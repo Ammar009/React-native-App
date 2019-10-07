@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {LOCALHOSTVPN} from '../../config';
 import {  Alert,Text, TextInput,KeyboardAvoidingView, View,TouchableOpacity,TouchableHighlight, ScrollView, StyleSheet, SafeAreaView, Dimensions, Platform } from 'react-native';
 <script src="http://10.42.0.1:8097"></script> 
 
@@ -22,13 +23,13 @@ class TipReceiverSignup extends Component {
         //this.onChangeText = this.onChangeText.bind(this);
       }
 
-      signuup() {
+      signuup = () => {
         if(this.state.first_name === '' || this.state.last_name === '' || this.state.email === '' || this.state.password === '' || this.state.phone === '' || this.state.states === '' || this.state.country === '' || this.state.zipcode === '' || this.state.address === ''){
             console.log('In IFFFF');  
             Alert.alert('Fields are Empty')
           }
           else {
-            fetch('http://192.168.1.132:3000/api/users/signup',{
+            fetch(`${LOCALHOSTVPN}/api/users/signup`,{
                 method: 'POST',
                 headers: {
                     'Accept' : 'application/json',
@@ -62,9 +63,9 @@ class TipReceiverSignup extends Component {
           }
     }
 
-    sendEmail(res){
+    sendEmail = (res) =>{
         console.log('In SEND EMAILLLLLLLLL', res);
-        fetch('http://192.168.1.132:3000/api/users/emailverification',{
+        fetch(`${LOCALHOSTVPN}/api/users/emailverification`,{
                 method: 'POST',
                 headers: {
                     'Accept' : 'application/json',
@@ -85,7 +86,7 @@ class TipReceiverSignup extends Component {
                 .done();
 
     } 
-    loginScreen(){
+    loginScreen = () => {
         console.log('ashkfjahjivkadsjfhasihfjasbickjashniaskjmo');
         this.props.navigation.navigate('login');
     }

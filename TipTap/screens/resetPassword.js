@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {LOCALHOSTVPN} from '../config';
 import { View,Alert, Text, StyleSheet, TextInput, Image, Button, TouchableHighlight, SafeAreaView, ImageBackground, TouchableOpacity } from 'react-native';
 //import Icon from "react-native-vector-icons/Ionicons";
 import bg from '../assets/images/login-bg.jpg'
@@ -22,7 +23,7 @@ class ResetPassword extends Component {
               Alert.alert("Password Mismatch. Type AGIAN")
           }
           else {
-            fetch('http://192.168.1.132:3000/api/users/changePassword',{
+            fetch(`${LOCALHOSTVPN}/api/users/changePassword`,{
             method: 'POST',
             headers: {
                 'Accept' : 'application/json',

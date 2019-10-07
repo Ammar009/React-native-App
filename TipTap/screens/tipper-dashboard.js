@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import {LOCALHOSTVPN} from '../config';
 import {
   StyleSheet,
   Platform,
@@ -7,13 +8,54 @@ import {
   SafeAreaView,
   Image,
   TouchableHighlight,
-  ScrollView
+  ScrollView, 
+  Alert
 } from "react-native";
-import { Container, Header, Content, Card, Textarea, Form } from "native-base";
+import { Card } from "native-base";
 import Icon from "react-native-vector-icons/Ionicons";
 import WALLET from "../assets/images/wallet.png";
+import AsyncStorage from "@react-native-community/async-storage";
 
 class TipperDashboard extends Component {
+  constructor() {
+    super();
+    this.state = {
+        tipGiveruser: '',
+        allTipRecieverUser: [],
+        totalAmount: '',
+    };
+  }
+  async componentWillMount () {
+    
+    const val = await AsyncStorage.getItem('isLoggedIn');
+    this.setState({
+      tipGiveruser : JSON.parse(val)
+    })
+    fetch(`${LOCALHOSTVPN}/api/userTipReciever/getAllTipRecieverUser/${this.state.tipGiveruser.email}`,{
+      method: 'GET',
+    }).then(response => response.json())
+      .then(response => {
+        this.setState({
+          allTipRecieverUser: response.tipRecieverUser
+        })
+        // console.log('response', this.state.allTipRecieverUser.length)
+      }).catch((err) => {
+        Alert.alert('Error');
+      })
+      .done();
+      let x =  await this.getAllTipGivenAmount();
+      console.log('xxxxxx', x);
+  }
+
+  async getAllTipGivenAmount () {
+    let totalAmount = 0;
+    let x = this.state.allTipRecieverUser.map(TRU=> {
+      totalAmount = totalAmount + TRU.tipAmount
+    })
+    console.log('***************', x);
+    return this.totalAmount
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -39,19 +81,15 @@ class TipperDashboard extends Component {
                 <Text style={{ fontSize: 12, color: "#9B9B9B" }}>
                   To be calculated
                 </Text>
-                <Text
-                  style={{ fontSize: 16, color: "#72BD20", fontWeight: "bold" }}
-                >
-                  $4500,00
+                <Text style={{ fontSize: 16, color: "#72BD20", fontWeight: "bold" }}>
+                  {/* {this.getAllTipGivenAmount()} */}
                 </Text>
               </View>
               <View>
                 <Text style={{ fontSize: 12, color: "#9B9B9B" }}>
                   The Month Tips
                 </Text>
-                <Text
-                  style={{ fontSize: 16, color: "#FF5A6E", fontWeight: "bold" }}
-                >
+                <Text style={{ fontSize: 16, color: "#FF5A6E", fontWeight: "bold" }}>
                   $320,00
                 </Text>
               </View>
@@ -82,228 +120,52 @@ class TipperDashboard extends Component {
                 }}
               />
               <View style={{ flexDirection: "column" }}>
-                <Text style={styles.text}>Test Person</Text>
-                <Text style={styles.text}>account</Text>
+                <Text style={styles.text}>{this.state.tipGiveruser.first_name}</Text>
+                <Text style={styles.text}>{this.state.tipGiveruser.last_name}</Text>
               </View>
             </View>
           </View>
         </View>
         <ScrollView style={styles.listWrapper}>
-          <View>
+            {this.state.allTipRecieverUser.length > 0 ? this.state.allTipRecieverUser.map((item, index)=>{
+          return (<View key={index}>
             <Text
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: "#D8D8D8",
-                paddingBottom: "1%",
-                fontSize: 10
-              }}
-            >
-              15 Mar 2018
-            </Text>
-            <View style={styles.tipItems}>
-              <View style={styles.tipItem}>
-                <Icon name="ios-card" size={25} color="#7AC727" />
-                <View
+            style={{
+              borderBottomWidth: 1,
+              borderBottomColor: "#D8D8D8",
+              paddingBottom: "1%",
+              fontSize: 10
+            }}
+          >
+            {item.recievingDate}
+          </Text>
+          <View style={styles.tipItems}>
+            <View style={styles.tipItem}>
+              <Icon name="ios-card" size={25} color="#7AC727" />
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between"
+                }}
+              >
+                <Text
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between"
+                    paddingLeft: "5%",
+                    paddingTop: "1%",
+                    fontSize: 10
                   }}
                 >
-                  <Text
-                    style={{
-                      paddingLeft: "5%",
-                      paddingTop: "1%",
-                      fontSize: 10
-                    }}
-                  >
-                    {" "}
-                    Tip paid To James Maxwell
-                  </Text>
-                  <Text style={{ paddingLeft: "15%" }}> $20 USD</Text>
-                </View>
-              </View>
-              <View style={styles.tipItem}>
-                <Icon name="ios-card" size={25} color="#7AC727" />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <Text
-                    style={{
-                      paddingLeft: "5%",
-                      paddingTop: "1%",
-                      fontSize: 10
-                    }}
-                  >
-                    {" "}
-                    Tip paid To James Maxwell
-                  </Text>
-                  <Text style={{ paddingLeft: "15%" }}> $20 USD</Text>
-                </View>
+                  Tip paid To {item.reciever_name}
+                </Text>
+                <Text style={{ paddingLeft: "15%" }}> ${item.tipAmount} USD</Text>
               </View>
             </View>
-            <Text
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: "#D8D8D8",
-                paddingBottom: "5%"
-              }}
-            >
-              15 Mar 2018
-            </Text>
-            <View style={styles.tipItems}>
-              <View style={styles.tipItem}>
-                <Icon name="ios-card" size={25} color="#7AC727" />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <Text
-                    style={{
-                      paddingLeft: "5%",
-                      paddingTop: "1%",
-                      fontSize: 10
-                    }}
-                  >
-                    {" "}
-                    Tip paid To James Maxwell
-                  </Text>
-                  <Text style={{ paddingLeft: "15%" }}> $20 USD</Text>
-                </View>
-              </View>
-              <View style={styles.tipItem}>
-                <Icon name="ios-card" size={25} color="#7AC727" />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <Text
-                    style={{
-                      paddingLeft: "5%",
-                      paddingTop: "1%",
-                      fontSize: 10
-                    }}
-                  >
-                    {" "}
-                    Tip paid To James Maxwell
-                  </Text>
-                  <Text style={{ paddingLeft: "15%" }}> $20 USD</Text>
-                </View>
-              </View>
-            </View>
-            <Text
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: "#D8D8D8",
-                paddingBottom: "5%"
-              }}
-            >
-              15 Mar 2018
-            </Text>
-            <View style={styles.tipItems}>
-              <View style={styles.tipItem}>
-                <Icon name="ios-card" size={25} color="#7AC727" />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <Text
-                    style={{
-                      paddingLeft: "5%",
-                      paddingTop: "1%",
-                      fontSize: 10
-                    }}
-                  >
-                    {" "}
-                    Tip paid To James Maxwell
-                  </Text>
-                  <Text style={{ paddingLeft: "15%" }}> $20 USD</Text>
-                </View>
-              </View>
-              <View style={styles.tipItem}>
-                <Icon name="ios-card" size={25} color="#7AC727" />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <Text
-                    style={{
-                      paddingLeft: "5%",
-                      paddingTop: "1%",
-                      fontSize: 10
-                    }}
-                  >
-                    {" "}
-                    Tip paid To James Maxwell
-                  </Text>
-                  <Text style={{ paddingLeft: "15%" }}> $20 USD</Text>
-                </View>
-              </View>
-            </View>
-            <Text
-              style={{
-                borderBottomWidth: 1,
-                borderBottomColor: "#D8D8D8",
-                paddingBottom: "5%"
-              }}
-            >
-              15 Mar 2018
-            </Text>
-            <View style={styles.tipItems}>
-              <View style={styles.tipItem}>
-                <Icon name="ios-card" size={25} color="#7AC727" />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <Text
-                    style={{
-                      paddingLeft: "5%",
-                      paddingTop: "1%",
-                      fontSize: 10
-                    }}
-                  >
-                    {" "}
-                    Tip paid To James Maxwell
-                  </Text>
-                  <Text style={{ paddingLeft: "15%" }}> $20 USD</Text>
-                </View>
-              </View>
-              <View style={styles.tipItem}>
-                <Icon name="ios-card" size={25} color="#7AC727" />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <Text
-                    style={{
-                      paddingLeft: "5%",
-                      paddingTop: "1%",
-                      fontSize: 10
-                    }}
-                  >
-                    {" "}
-                    Tip paid To James Maxwell
-                  </Text>
-                  <Text style={{ paddingLeft: "15%" }}> $20 USD</Text>
-                </View>
-              </View>
-            </View>
+          </View> 
+          </View>)})
+          : <View>
+            <Text>No History</Text>
           </View>
+            }
         </ScrollView>
         <TouchableHighlight
           style={styles.button}

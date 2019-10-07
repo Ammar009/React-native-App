@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-//import SplashScreen from 'react-native-splash-screen'
+import AsyncStorage from '@react-native-community/async-storage';
+import {LOCALHOSTVPN} from '../config';
 import { 
   View,
   Alert,
@@ -9,10 +10,8 @@ import {
   TouchableHighlight,
   ImageBackground,
   TouchableOpacity,
-  AsyncStorage,
   Platform 
 } from 'react-native';
-// import Icon from "react-native-vector-icons/Ionicons";
 import bg from '../assets/images/login-bg.jpg'
 class LoginScreen extends Component {
   constructor(props) {
@@ -21,23 +20,17 @@ class LoginScreen extends Component {
       email: '',
       password: '',
     };
-    //this.onChangeText = this.onChangeText.bind(this);
   }
 
-  // componentDidMount() {
-  //   SplashScreen.show();
-  //   this.splashScreenClose();
-  //   // do stuff while splash screen is shown
-  //     // After having done stuff (such as async tasks) hide the splash screen
-     
-  // }
-  // splashScreenClose(){
-  //   setTimeout( SplashScreen.hide(), 3000);
-  // }
+  async componentWillMount () {
+    const val = await AsyncStorage.getItem('isLoggedIn');
+      if(val) {
+        this.props.navigation.navigate('tipperDashboard');
+      }
 
+  }
   login() {
-    console.log('INNN LOGIN')
-    fetch('http://192.168.1.132:3000/api/users/login',{
+    fetch(`${LOCALHOSTVPN}/api/users/login`,{
         method: 'POST',
         headers: {
             'Accept' : 'application/json',
@@ -49,10 +42,15 @@ class LoginScreen extends Component {
         })
     }).then(response => response.json())
     .then(response => {
-      AsyncStorage.setItem('isLoggedIn', 1)
-      Alert.alert('Welcome!!!')
-      this.props.navigation.navigate('tipperDashboard'); 
-      //Alert.alert(response);
+      console.log('resp', response.user);
+      AsyncStorage.setItem('isLoggedIn', JSON.stringify(response.user), async () => {
+        const test = await AsyncStorage.getItem('isLoggedIn');
+        console.log('hjvfgdhjsfgqqqqqqqqqqqqqqqqqqqqqqqqqq', test);
+        Alert.alert('Welcome!!!');
+        this.props.navigation.navigate('tipperDashboard', {
+          user: response.user
+        });
+      });
     }).catch((err) => {
         Alert.alert('There is some error, Kindly login Again')
         .done();

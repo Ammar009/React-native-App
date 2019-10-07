@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
-import {StyleSheet, Platform, View, Text, SafeAreaView, TouchableOpacity, ScrollView, TextInput} from 'react-native';
+import {LOCALHOSTVPN} from '../config';
+import {StyleSheet, View, Text, SafeAreaView, TouchableOpacity, ScrollView, TextInput} from 'react-native';
 import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import Entypo from "react-native-vector-icons/Entypo";
 import { compact } from "underscore";
@@ -10,21 +11,11 @@ class Search extends Component{
         this.state = {
             tipReciever: [],
             temp: []
-            // loading: true
         };
-        // this.handleChange = this.handleChange.bind(this);
     }
-    // componentDidMount() {
-    //     if(Platform.OS == "android") {
-    //         Permissions.check('camera').then(res => {
-    //             console.log('response from permission', res);
-    //         })
-
-    //     }
-    // }
+    
     componentWillMount() {
-        // let tipReciever = [];
-        fetch('http://192.168.1.132:3000/api/tipReciever/getAllTipReciever',{
+        fetch(`${LOCALHOSTVPN}/api/tipReciever/getAllTipReciever`,{
                 method: 'GET',
             }).then(response => response.json())
             .then(response => {
@@ -32,11 +23,11 @@ class Search extends Component{
                 this.setState({ temp : response})
             }).catch((err) => {
                 Alert.alert('Error');
-                console.log('ERRRRROOOORRR',err)})
+                })
                 .done();
     }
     handleChange =(e)=> {
-        console.log('=====>', e)
+        console.log('xxxxxxxxxxxxxxx');
         if(e !== ''){
             let x;
             x = this.state.tipReciever.map(item=>{
@@ -46,8 +37,6 @@ class Search extends Component{
                 }
             })
             let tse = compact(x);
-            console.log('xxxxxxxxxxxxxxxxxxxxxx',x, tse);
-            
             this.setState({tipReciever : tse})
         }
         else {
@@ -71,8 +60,8 @@ class Search extends Component{
                 <ScrollView style={styles.listWrapper}>
                 {this.state.tipReciever.length > 0 ? this.state.tipReciever.map((item, index)=>{
                     return(<TouchableOpacity key={index} style={styles.searchItem} onPress={()=>{navigate('selectedPerson', {
-                        recieverFirstName: 'TESTTTT',
-                        recieverLastName: 'YYYYY',
+                        recieverFirstName: item.first_name,
+                        recieverLastName: item.last_name,
 
                     })}}>
                         <View style={styles.receiverInfoBlock} >          
