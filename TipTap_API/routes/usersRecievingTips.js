@@ -2,6 +2,10 @@ const { UserTipReciever } = require('../models/userTipReciever');
 const express = require('express');
 const router = express.Router();
 const nodemailer = require("nodemailer");
+const Moment = require('moment');
+const { extendMoment } = require('moment-range');
+const moment = extendMoment(Moment);
+const { filter } = require('underscore');
 const GMAIL_SERVICE = 'Gmail';
 const EMAIL = 'tfortiptfortap@gmail.com';
 const GMAIL_USER = 'Tip Tap';
@@ -12,7 +16,8 @@ const GMAIL_PASSWORD = 'tiptap123!';
 router.post('/tipRecieverUser', async (req, res) => {
     try {
         let tipRecieverUser = new UserTipReciever(req.body);
-    await tipRecieverUser.save();
+        console.log('=================>>>>', req.body)
+        await tipRecieverUser.save();
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -38,7 +43,7 @@ router.post('/tipRecieverUser', async (req, res) => {
                 });
                 if(tipGivermail) {
                     return res.send({
-                        message: 'Your tip has been delivered'
+                        message: true
                     });
                 }
         }
@@ -56,19 +61,32 @@ router.get('/getAllTipRecieverUser/:email', async (req, res) => {
     } catch (err) {
         res.status(400).send({err})
     }
-    
-    
-    // if (!token) return res.status(400).send('We were unable to find a valid token. Your token my have expired.');
-    
-    // const user = await User.findOne({ _id: token.userId })
-    // if (!user) return res.status(400).send('We were unable to find a user for this token.');
-    // if (user.isVerified) return res.status(400).send('This user has already been verified.');
-    
-    // user.isVerified = true;
-    // const result = await user.save()
-    // if (!result) return res.status(400).send(err.message);
-    
-    // res.status(200).send("The account has been verified. Please log in.");
+})
+
+//get data of all tip givers given by only one person
+router.get('/getAllTipGiverUser/:email', async (req, res) => {
+    try {
+        let tipGiverUser = await UserTipReciever.find({ reciever_email: req.params.email });
+        res.json({tipGiverUser})
+    } catch (err) {
+        res.status(400).send({err})
+    }
+})
+
+//get the data of tips between the range of dates
+router.get('/getTipsBetweenRange/:startDate/:endDate', async (req, res) => {
+    console.log('HELLLO', req.params)
+    try {
+        let specificTipRecieverUser = await UserTipReciever.find({
+        recievingDate: {
+            $gte: moment(req.params.startDate),
+            $lte: moment(req.params.endDate)
+        }
+        })
+        res.json({specificTipRecieverUser})
+    } catch (err) {
+        console.log("ERROR", err)
+    }
    })
 
 module.exports = router;

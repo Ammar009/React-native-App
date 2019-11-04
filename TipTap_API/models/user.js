@@ -60,6 +60,10 @@ const userSchema = mongoose.Schema({
     resetPasswordExpires: {
         type: String,
         default: ''
+    },
+    profileImage: {
+        type: String,
+        default: ''
     }
 })
 

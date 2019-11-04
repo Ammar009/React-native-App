@@ -1,12 +1,20 @@
 const { User, validate } = require('../models/user');
-const mongoose = require('mongoose');
 const express = require('express');
 const nodemailer = require("nodemailer");
 const crypto = require('crypto');
+const atob = require('atob');
+const Blob = require('node-blob');
 var randomize = require('randomatic');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
+const multer  = require('multer');
 const { Token, validateToken } = require('../models/token');
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/');
+    }
+  })
+const upload = multer({ storage: storage, limits: { fieldSize: 25 * 1024 * 1024 } });
 const GMAIL_SERVICE = 'Gmail';
 const EMAIL = 'tfortiptfortap@gmail.com';
 const GMAIL_USER = 'Tip Tap';
@@ -36,7 +44,6 @@ router.post('/signup', async (req, res) => {
 //user Login
 router.post('/login', async(req,res)=>{
     const user = await User.findOne({email : req.body.email}); 
-
     if(!user){
         return res.send('User Not Found')
     }
@@ -201,10 +208,45 @@ router.post('/emailverification', async (req, res) => {
         }) 
         
     }
-    // return res.json({
-    //     message: 'Password is upodated'
-    // })
    });
+
+
+   router.post('/uploadImage', async (req, res, next) => {
+    console.log('===Upload Iamge==>', req.body);
+    const user = await User.findOne({ _id : req.body.id}); 
+    user.updateOne({
+        profileImage : req.body.imageUrl,
+    },(err, res) => {
+        if(err){
+            console.log('User is not updated!!!');
+        }else{
+            console.log('Response', res);
+            user.save();
+        }
+    });
+    console.log('user', user);
+    return res.json({
+        message: 'Your image is not uploaded'
+    }) 
+  });
+
+   router.post('/profile', upload.single('profile'), async (req, res, next) => {
+    console.log('==============xgdfghdfghdfgh====>>>', req.body);
+    //let blob = await dataURItoBlob(req.body.profile);
+    // console.log('After Blob', blob);
+    // const result = await User.findByIdAndUpdate(req.body.id, { $set: { profileImage: 'http://192.168.18.63:3000/api/users/profile/' + req.body.profile } });
+    // console.log('fgdfgdfg', result);
+    // if (result) {
+    //   const barterResult = await Barter.updateMany({ _id: { $in: req.body.id } }, { userImage: result.profileImage })
+    //   console.log(barterResult);
+    //   const user = await User.findById(req.body.id)
+    //   io.emit('user', _.pick(user, ['_id', 'firstname', 'lastname', 'email', 'profileImage', 'phoneNumber']));
+    //   return res.send('http://50.63.12.199:3000/api/file/profile/' + req.file.filename);
+    // }
+    return res.send('yy');
+    // req.file is the `avatar` file
+    // req.body will hold the text fields, if there were any
+  });
 
    //reset
 //    router.get('/reset/:token', function(req, res) {

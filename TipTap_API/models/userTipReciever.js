@@ -34,12 +34,19 @@ const UserTipRecieverSchema = mongoose.Schema({
         maxLength: 50,
         required: true
     },
+    tipGiver_cardNo : {
+        type: Number,
+        trim: true,
+        minLength: 5,
+        maxLength: 255,
+        required: true
+    },
     tipAmount: {
         type: Number,
         required: true
     },
     recievingDate: {
-        type: String,
+        type: Date,
         required: true
     },
 })
