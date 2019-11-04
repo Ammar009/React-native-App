@@ -3,6 +3,13 @@ package com.tiptap;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+// import io.invertase.firebase.RNFirebasePackage;
+// import io.invertase.firebase.messaging.RNFirebaseMessagingPackage; // <-- Add this line
+import com.RNFetchBlob.RNFetchBlobPackage;
+import com.reactnativecommunity.webview.RNCWebViewPackage;
+import fr.snapp.imagebase64.RNImgToBase64Package;
+import com.imagepicker.ImagePickerPackage;
+import com.henninghall.date_picker.DatePickerPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
@@ -27,10 +34,17 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            // new RNFirebasePackage(),
+            new RNFetchBlobPackage(),
+            new RNCWebViewPackage(),
+            new RNImgToBase64Package(),
+            new ImagePickerPackage(),
+            new DatePickerPackage(),
             new AsyncStoragePackage(),
             new VectorIconsPackage(),
             new SplashScreenReactPackage(),
             new RNGestureHandlerPackage()
+            // new RNFirebaseMessagingPackage() // <-- Add this line
             // new SplashScreenReactPackage()
       );
     }

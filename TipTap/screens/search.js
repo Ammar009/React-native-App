@@ -10,7 +10,8 @@ class Search extends Component{
         super();
         this.state = {
             tipReciever: [],
-            temp: []
+            temp: [],
+            recieverCardNo: '42424242424242'
         };
     }
     
@@ -19,15 +20,14 @@ class Search extends Component{
                 method: 'GET',
             }).then(response => response.json())
             .then(response => {
-                this.setState({ tipReciever : response})
-                this.setState({ temp : response})
+                this.setState({ tipReciever : response })
+                this.setState({ temp : response })
             }).catch((err) => {
                 Alert.alert('Error');
                 })
                 .done();
     }
     handleChange =(e)=> {
-        console.log('xxxxxxxxxxxxxxx');
         if(e !== ''){
             let x;
             x = this.state.tipReciever.map(item=>{
@@ -62,6 +62,8 @@ class Search extends Component{
                     return(<TouchableOpacity key={index} style={styles.searchItem} onPress={()=>{navigate('selectedPerson', {
                         recieverFirstName: item.first_name,
                         recieverLastName: item.last_name,
+                        recieverEmail: item.email,
+                        recieverCardNo: this.state.recieverCardNo
 
                     })}}>
                         <View style={styles.receiverInfoBlock} >          

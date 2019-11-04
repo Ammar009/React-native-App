@@ -85,7 +85,7 @@ const MainNavigator = createSwitchNavigator({
   search:{screen: Search},
   selectedPerson:{screen:SelectedPerson},
   paymentMethods:{screen:PaymentMethods},
-  ReceiverDashboard:{screen:ReceiverDashboard},
+  receiverDashboard:{screen:ReceiverDashboard},
   qrcodereceiver:{screen:QrCodeReceiver},
   tranasctionhistory:{screen:TranasctionHistory}
 });

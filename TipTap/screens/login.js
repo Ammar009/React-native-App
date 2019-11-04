@@ -1,17 +1,7 @@
 import React, { Component } from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 import {LOCALHOSTVPN} from '../config';
-import { 
-  View,
-  Alert,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableHighlight,
-  ImageBackground,
-  TouchableOpacity,
-  Platform 
-} from 'react-native';
+import { View, Alert, Text, StyleSheet, TextInput, TouchableHighlight, ImageBackground, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import bg from '../assets/images/login-bg.jpg'
 class LoginScreen extends Component {
   constructor(props) {
@@ -23,38 +13,53 @@ class LoginScreen extends Component {
   }
 
   async componentWillMount () {
-    const val = await AsyncStorage.getItem('isLoggedIn');
-      if(val) {
+    const user = await AsyncStorage.getItem('isLoggedIn');
+      if(user.userType === 'tipgiver') {
         this.props.navigation.navigate('tipperDashboard');
+      } else {
+        this.props.navigation.navigate('receiverDashboard');
       }
-
   }
   login() {
-    fetch(`${LOCALHOSTVPN}/api/users/login`,{
+    if (this.state.email === '' || this.state.password === '')  {
+      Alert.alert('Please fill out the fields')
+    } else {
+      console.log('xxxxxxxxxxxxxx', this.state)
+      fetch(`${LOCALHOSTVPN}/api/users/login`,{
         method: 'POST',
         headers: {
-            'Accept' : 'application/json',
-            'Content-Type' : 'application/json',
+          'Accept' : 'application/json',
+          'Content-Type' : 'application/json',
         },
         body: JSON.stringify({
-            email: `${this.state.email}`,
-            password: `${this.state.password}`,
+          email: `${this.state.email}`,
+          password: `${this.state.password}`,
         })
-    }).then(response => response.json())
-    .then(response => {
-      console.log('resp', response.user);
-      AsyncStorage.setItem('isLoggedIn', JSON.stringify(response.user), async () => {
-        const test = await AsyncStorage.getItem('isLoggedIn');
-        console.log('hjvfgdhjsfgqqqqqqqqqqqqqqqqqqqqqqqqqq', test);
-        Alert.alert('Welcome!!!');
-        this.props.navigation.navigate('tipperDashboard', {
-          user: response.user
-        });
-      });
-    }).catch((err) => {
-        Alert.alert('There is some error, Kindly login Again')
-        .done();
-})
+      }).then(response => response.json())
+        .then(response => {
+          if(response.user.userType === 'tipgiver') {
+            AsyncStorage.setItem('isLoggedIn', JSON.stringify(response.user), async () => {
+              const test = await AsyncStorage.getItem('isLoggedIn');
+              Alert.alert('Welcome!!!');
+              this.props.navigation.navigate('tipperDashboard', {
+                user: response.user
+              });
+            });
+          } else {
+            AsyncStorage.setItem('isLoggedIn', JSON.stringify(response.user), async () => {
+              const test = await AsyncStorage.getItem('isLoggedIn');
+              Alert.alert('Welcome!!!');
+              this.props.navigation.navigate('receiverDashboard', {
+                user: response.user
+              });
+            });
+          }
+          console.log('=======+++++++++++++++', response.user.userType)
+          
+        }).catch((err) => {
+            Alert.alert('There is some error, Kindly login Again')
+          }).done();
+    }
   }
 
   static navigationOptions = {
@@ -89,10 +94,9 @@ class LoginScreen extends Component {
               placeholder="Password"
               secureTextEntry
             />
-            <TouchableOpacity onPress={() => navigate('forgotPassword')}>
-                <Text style={styles.input}>Forgot ? </Text>
-              </TouchableOpacity>
-
+            {/* <TouchableOpacity onPress={() => navigate('ReceiverDashboard')}>
+                <Text style={{ color: '#81CE2D',paddingLeft:20 }}>Receiver Register</Text>
+              </TouchableOpacity> */}
             <TouchableHighlight
               style={styles.submit}
               onPress={()=> this.login()} //tipperDashboard changed to ReceiverDashboard
@@ -100,15 +104,17 @@ class LoginScreen extends Component {
               <Text style={styles.submitText}>Login</Text>
             </TouchableHighlight>
             <View style={styles.naviagtionActions}>
-              <TouchableOpacity>
+              <View>
+                <TouchableOpacity>
                 <Text style={{ color: 'gray' }}>Do Not have an Account ? </Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => navigate('signup')}>
                 <Text style={{ color: '#81CE2D' }}>Register</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigate('ReceiverDashboard')}>
-                <Text style={{ color: '#81CE2D',paddingLeft:20 }}>Receiver Register</Text>
+              <TouchableOpacity onPress={() => navigate('forgotPassword')}>
+                <Text style={{ color: '#81CE2D' }}> Forgot? </Text>
               </TouchableOpacity>
+              </View>
 
             </View>
 
@@ -126,7 +132,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center'
-
   },
   title: {
     textAlign: 'center',
