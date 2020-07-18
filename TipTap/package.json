@@ -10,7 +10,7 @@
     "@appbaseio/reactivesearch": "^3.0.1",
     "ac-qrcode": "^1.0.1",
     "axios": "^0.19.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "moment": "^2.24.0",
     "moment-range": "^4.0.2",
     "native-base": "^2.13.8",
